@@ -1,0 +1,16 @@
+# .gitignore in the root directory
+
+# General rules for Python (Flask)
+# *.py[cod]
+__pycache__/
+chromedriver-linux64/
+chrome-linux64/
+*.so
+# .env
+.venv/
+yfinance.cache
+build/
+dist/
+*.egg-info/
+
+
