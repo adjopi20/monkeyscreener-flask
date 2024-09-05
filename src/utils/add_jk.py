@@ -5,8 +5,6 @@ current_file_dir = os.path.dirname(os.path.abspath(__file__))
 relative_path = os.path.join(current_file_dir, '../../assets/stocklist.xlsx')
 path = os.path.abspath(relative_path)
 
-# src_path = '../../assets/stocklist.xlsx'
-
 #alternative way manual
 def addJK():
     dataframe = pd.read_excel(path)

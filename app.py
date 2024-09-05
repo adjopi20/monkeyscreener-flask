@@ -4,11 +4,16 @@ from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 import pytz
-from src.services.stock_info_service import combine_fetched_scraped_info
+from src.controllers.basic.stock_info_controller import combine_fetched_scraped_info
 from src.controllers.basic.stock_history import get_all_history_metadata
 from src.controllers.basic.stock_news import get_all_news
 import redis
+import os
+import sys
 
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
     
 app=Flask(__name__)
 client=redis.Redis()

@@ -15,9 +15,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
-from datetime import timedelta, datetime
 from typing import Optional
 import numpy as np
+import os
 
 class FetchedStock(BaseModel) :
     symbol: Optional[str] = 'Unknown'
@@ -82,25 +82,45 @@ combined = []
 
 def scrape_stock() :
     url = "https://www.idx.co.id/id/data-pasar/data-saham/daftar-saham"
+    current_file_dir = os.path.dirname(os.path.abspath(__file__))
+    relative_path_chrome = os.path.join(current_file_dir, '../../chrome-linux64/chrome-linux64/chrome')
+    relative_path_chromedriver = os.path.join(current_file_dir, '../../chromedriver-linux64/chromedriver-linux64/chromedriver')
+    path_chrome = os.path.abspath(relative_path_chrome)
+    path_chromedriver = os.path.abspath(relative_path_chromedriver)
+
+    # custom_xvfb_path = os.path.abspath("tools/xvfb")
+    custom_xvfb_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/tools"
+    os.environ["PATH"] = f"{custom_xvfb_path}:{os.environ['PATH']}"
+
+
 
     display = Display(
-        visible=0, size=(800, 600)
+        visible=0, size=(800, 600), backend="xvfb"
         )
     display.start()
 
-    custom_chrome_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chrome-linux64/chrome-linux64/chrome"
-    chromedriver_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chromedriver-linux64/chromedriver-linux64/chromedriver"
+    
+
+    # custom_chrome_path = r"/home/enigma/PROJECTS/stock-analysis-project-app/flask-yfinance/chrome-linux64/chrome-linux64/chrome"
+    # chromedriver_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chromedriver-linux64/chromedriver-linux64/chromedriver"
     
     # Initialize the WebDriver
     # service = Service(executable_path="/usr/local/bin/chromedriver")
-    service = Service(executable_path=chromedriver_path)
+    service = Service(executable_path=relative_path_chromedriver, log_path="chromedriver.log")
+    service.command_line_args().append("--verbose")
+
     # options = webdriver.ChromeOptions()
     options = Options()
-    options.binary_location = custom_chrome_path  # Point to the custom Chrome binary
+    options.binary_location = relative_path_chrome  # Point to the custom Chrome binary
     # options.add_argument("--no-sandbox")
     # options.add_argument("--headless=new")  # Run Chrome in headless mode
     # options.add_argument("--disable-dev-shm-usage")
     # options.add_argument('--disable-gpu')
+
+    # capabilities = DesiredCapabilities.CHROME.copy()
+    # capabilities['acceptSslCerts'] = True 
+    # capabilities['acceptInsecureCerts'] = True
+
     driver = webdriver.Chrome(service=service, options=options)
 
     
@@ -110,8 +130,6 @@ def scrape_stock() :
 
         wait = WebDriverWait(driver, 1800)
 
-       
-        
         dropdown = wait.until(
             EC.presence_of_element_located((By.CLASS_NAME, "footer__row-count__select")))
         dropdown.click()
@@ -265,12 +283,6 @@ def fetch_stock():
                 volume=stock_info.get('volume') or 0
             )
             fetched_stocks.append(fetched_stock.model_dump(mode='json'))
-        
-        # for item in fetched_stocks:
-        #     for key in item:
-        #         fetched_stocks = map(lambda x : x == item[key] if item[key] == float('inf') else item[key], np.nan )
-                
-       
             
         print(f"fetched stock without cache: {len(fetched_stocks)}")    
         return fetched_stocks
@@ -327,8 +339,6 @@ def combine_fetched_scraped_info():
 
             # Apply the function to each item in the list
             all_stocks = list(map(replace_inf_with_nan, all_stocks))
-
-             
 
             # print(f"p {len(stocks_info)}")
             return all_stocks
