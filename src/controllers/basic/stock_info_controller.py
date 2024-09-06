@@ -147,11 +147,12 @@ def clear_cache(key):
     try:
         
         client.delete(key)                
-        # client.delete('all-news')
-        # client.delete('fetched_all_stock')
-        # client.delete('scrape_all_stock')
-        # client.delete('all_stock')
+        # all-news
+        # fetched_all_stock
+        # scrape_all_stock
+        # all_stock
         # all_historical_price_{period}
+        # top_gainer_1mo
         # curl -X POST http://127.0.0.1:5000/api/clear_cache/
 
         return jsonify({"message": "Cache cleared successfully"}), 200
