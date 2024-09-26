@@ -123,7 +123,7 @@ def get_all_info():
 @info_bp.route('/api/filter-options', methods=['GET'])
 def filter_options():
     # stocklist = combine_fetched_scraped_info()
-    metric=["bookValue", "currentPrice", "currentRatio", "debtToEquity", "dividendRate", "dividendYield", "earningsGrowth", "earningsQuarterlyGrowth",
+    metric=["beta","52WeekChange","fiftyDayAverage","fiftyTwoWeekHigh","fiftyTwoWeekLow","previousClose","bookValue", "currentPrice", "currentRatio", "debtToEquity", "dividendRate", "dividendYield", "earningsGrowth", "earningsQuarterlyGrowth",
             "ebitda","ebitdaMargins", "enterpriseToEbitda","enterpriseToRevenue","enterpriseValue","floatShares", "forwardEps","forwardPE",
             "freeCashflow","grossMargins","heldPercentInsiders","heldPercentInstitutions","marketCap", "netIncomeToCommon", "operatingCashflow",
             "operatingMargins","payoutRatio","pegRatio","priceToBook","profitMargins","quickRatio","returnOnAssets","returnOnEquity","revenueGrowth",
