@@ -1,10 +1,7 @@
 from flask import send_file
 import pandas as pd 
-import matplotlib.pyplot as plt
-import json
 import numpy as np
 from astropy.stats import knuth_bin_width
-from src.services.histogram_sector_service import *
 
 def histogram_tool (dataset, category: str):
     values = []

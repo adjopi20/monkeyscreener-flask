@@ -1,14 +1,10 @@
 
 from flask import jsonify, request
-import json
-import pydantic
 import yfinance as yf 
-import pandas as pd
 from src.utils.add_jk import addJK
 from src.utils.convertTimestamp import convert_timestamp
-from src.services.stock_info_service import scrape_stock_with_cache
+from src.services.stock.basic.stock_info_service import scrape_stock_with_cache
 import logging
-from src.configs.cache_config import client, cache_ttl
 from typing import List, Dict
 
 
@@ -33,6 +29,7 @@ def get_all_history_metadata2(period):
                     'history': hist_dict,
                     'metadata': metadata
                 })
+                print(f"stock_history.get_all_history_metadata: {symbol}")
         except Exception as e:
             logging.error(f"error getting symbol for {symbol}: {e}")
     print(f"stock_history.get_all_history_metadata: {len(stock_arr)}")

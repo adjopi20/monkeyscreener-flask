@@ -3,7 +3,6 @@
 # from services.stock_info_service import fetched_info_with_cache,combine_fetched_scraped_info
 import numpy as np
 import scipy.stats as stats
-import astropy.stats as astats
 
 
 def trimmed_mean(dataset, category: str):

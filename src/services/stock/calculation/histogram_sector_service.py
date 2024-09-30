@@ -1,8 +1,5 @@
 # from utils.bell_curve import create_bell_curve
-from src.services.stock_info_service import combine_fetched_scraped_info, stocklist
-from src.models.sector_enum import Sector
-import pandas as pd
-import numpy as np
+from src.services.stock.basic.stock_info_service import stocklist
 
 
 def get_stock_info_for_histogram(sector, category, listBoard=None, industry=None, marketCap=None, recKey=None):

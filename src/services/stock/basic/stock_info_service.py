@@ -6,7 +6,6 @@ from pydantic import BaseModel, ValidationError
 from src.configs.cache_config import cache_ttl, client
 import json
 import pydantic.parse
-import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -16,7 +15,6 @@ from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
 from typing import Optional
-import numpy as np
 import os
 
 class FetchedStock(BaseModel) :
@@ -88,47 +86,32 @@ combined = []
 def scrape_stock() :
     url = "https://www.idx.co.id/id/data-pasar/data-saham/daftar-saham"
     current_file_dir = os.path.dirname(os.path.abspath(__file__))
-    relative_path_chrome = os.path.join(current_file_dir, '../../chrome-linux64/chrome-linux64/chrome')
-    relative_path_chromedriver = os.path.join(current_file_dir, '../../chromedriver-linux64/chromedriver-linux64/chromedriver')
+    relative_path_chrome = os.path.join(current_file_dir, '../../../../chrome-linux64/chrome-linux64/chrome')
+    relative_path_chromedriver = os.path.join(current_file_dir, '../../../../chromedriver-linux64/chromedriver-linux64/chromedriver')
     path_chrome = os.path.abspath(relative_path_chrome)
     path_chromedriver = os.path.abspath(relative_path_chromedriver)
 
-    # custom_xvfb_path = os.path.abspath("tools/xvfb")
-    custom_xvfb_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/tools"
-    os.environ["PATH"] = f"{custom_xvfb_path}:{os.environ['PATH']}"
-
-
-
     display = Display(
-        visible=0, size=(800, 600), backend="xvfb"
+        visible=0, size=(800, 600)
         )
     display.start()
-
-    
 
     # custom_chrome_path = r"/home/enigma/PROJECTS/stock-analysis-project-app/flask-yfinance/chrome-linux64/chrome-linux64/chrome"
     # chromedriver_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chromedriver-linux64/chromedriver-linux64/chromedriver"
     
     # Initialize the WebDriver
     # service = Service(executable_path="/usr/local/bin/chromedriver")
-    service = Service(executable_path=relative_path_chromedriver, log_path="chromedriver.log")
+    service = Service(executable_path=path_chromedriver, log_path="chromedriver.log")
     service.command_line_args().append("--verbose")
 
     # options = webdriver.ChromeOptions()
     options = Options()
-    options.binary_location = relative_path_chrome  # Point to the custom Chrome binary
+    options.binary_location = path_chrome 
     # options.add_argument("--no-sandbox")
-    # options.add_argument("--headless=new")  # Run Chrome in headless mode
-    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--headless=new")
     # options.add_argument('--disable-gpu')
 
-    # capabilities = DesiredCapabilities.CHROME.copy()
-    # capabilities['acceptSslCerts'] = True 
-    # capabilities['acceptInsecureCerts'] = True
-
     driver = webdriver.Chrome(service=service, options=options)
-
-    
 
     try:
         driver.get(url)

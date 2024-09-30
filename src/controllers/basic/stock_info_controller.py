@@ -6,11 +6,9 @@ import yfinance as yf
 import pandas as pd
 from src.utils.add_jk import addJK
 import logging
-from src.services.stock_info_service import stocklist, combine_fetched_scraped_info, scrape_stock_with_cache
-from src.services.histogram_sector_service import *
-import numpy as np
+from src.services.stock.basic.stock_info_service import stocklist, combine_fetched_scraped_info, scrape_stock_with_cache
+from src.services.stock.calculation.histogram_sector_service import get_stock_info_for_histogram
 from src.configs.cache_config import client
-import math
 
 info_bp = Blueprint('info', __name__)
 
@@ -123,7 +121,7 @@ def get_all_info():
 @info_bp.route('/api/filter-options', methods=['GET'])
 def filter_options():
     # stocklist = combine_fetched_scraped_info()
-    metric=["beta","52WeekChange","fiftyDayAverage","fiftyTwoWeekHigh","fiftyTwoWeekLow","previousClose","bookValue", "currentPrice", "currentRatio", "debtToEquity", "dividendRate", "dividendYield", "earningsGrowth", "earningsQuarterlyGrowth",
+    metric=["beta","fiftyTwoWeekChange","fiftyDayAverage","fiftyTwoWeekHigh","fiftyTwoWeekLow","previousClose","bookValue", "currentPrice", "currentRatio", "debtToEquity", "dividendRate", "dividendYield", "earningsGrowth", "earningsQuarterlyGrowth",
             "ebitda","ebitdaMargins", "enterpriseToEbitda","enterpriseToRevenue","enterpriseValue","floatShares", "forwardEps","forwardPE",
             "freeCashflow","grossMargins","heldPercentInsiders","heldPercentInstitutions","marketCap", "netIncomeToCommon", "operatingCashflow",
             "operatingMargins","payoutRatio","pegRatio","priceToBook","profitMargins","quickRatio","returnOnAssets","returnOnEquity","revenueGrowth",

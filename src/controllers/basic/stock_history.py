@@ -1,12 +1,9 @@
 from flask import Blueprint, jsonify, request
 import json
-import pydantic
 import yfinance as yf 
-import pandas as pd
-from src.utils.add_jk import addJK
 from src.utils.convertTimestamp import convert_timestamp
-from src.services.stock_info_service import scrape_stock_with_cache
-from src.services.top_gainer import process_historical_data, get_all_history_metadata2
+from src.services.stock.basic.stock_info_service import scrape_stock_with_cache
+from src.services.stock.calculation.top_gainer import process_historical_data, get_all_history_metadata2
 import logging
 from src.configs.cache_config import client, cache_ttl
 

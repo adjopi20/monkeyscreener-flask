@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify
 import yfinance as yf 
-import pandas as pd
 from src.utils.add_jk import addJK
 import logging
 
@@ -38,13 +37,13 @@ def get_major_holders(symbol):
     
     try:
         stock = yf.Ticker(symbol)
-        major_holders = stock.major_holders
-        print(f'major_holders: {major_holders}')
-        if major_holders is not None and not major_holders.empty:
+        tes = stock.major_holders
+        print(f'major_holders: {tes}')
+        if tes is not None and not tes.empty:
             # Convert to dict and return JSON
             return jsonify({
                 'symbol': symbol,
-                'major_holders': major_holders.to_dict(orient='index')
+                'major_holders': tes.to_dict(orient='index')
             })
         else:
             # Handle cases where no major holders are found

@@ -7,6 +7,8 @@ import pytz
 from src.controllers.basic.stock_info_controller import combine_fetched_scraped_info
 from src.controllers.basic.stock_history import get_all_history_metadata
 from src.controllers.basic.stock_news import get_all_news
+# from src.services.stock.basic.stock_history import get_history_metadata
+from src.services.stock.calculation.risk_reward import five_year_cagr_close
 import redis
 import os
 import sys
