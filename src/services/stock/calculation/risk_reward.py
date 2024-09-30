@@ -1,7 +1,7 @@
 from src.services.stock.basic.stock_history import get_history_metadata
 import numpy as np
 
-def five_year_cagr_close():
+def five_year_cagr():
     tes = get_history_metadata('ASII.JK', '5y')
     # tes2 = tes['Close'].iloc[:-1]
     first = tes['Close'].iloc[0]
@@ -14,9 +14,9 @@ def five_year_cagr_close():
     print(f"cagr, {cagr:.4%}")
     return cagr
 
-five_year_cagr_close()
+five_year_cagr()
 
-def five_year_max_drawdown_close():
+def five_year_max_drawdown():
     tes = get_history_metadata('ASII.JK', '5y')
     # tes2 = tes['Close'].iloc[:-1]
     rolling_max = tes['Close'].cummax()
@@ -41,17 +41,26 @@ def five_year_max_drawdown_close():
     # print("max_drawdown_percent",max_drawdown_percent)
     # return max_drawdown_percent
 
-five_year_max_drawdown_close()
+five_year_max_drawdown()
 
 def volatility():
     tes = get_history_metadata('ASII.JK', '5y')
+
+    tes['Log_Ret'] = np.log(tes['Close'] / tes['Close'].shift(1))
+    tes['Volatility'] = tes['Log_Ret'].rolling(window=252).std() * np.sqrt(252)
+    print(tes)
+
     # Calculate daily returns
     daily_returns = tes['Close'].pct_change().dropna()
 
     # Calculate annualized volatility (standard deviation)
-    volatility = daily_returns.std() * np.sqrt(1260)  # Assuming 252 trading days per year
+    volatility = daily_returns.std() * np.sqrt(252)  # Assuming 252 trading days per year
 
     print(f"Annualized Volatility: {volatility:.2%}")
+
+    return volatility
+
+volatility()
 
 
 
