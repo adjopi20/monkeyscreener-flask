@@ -85,6 +85,12 @@ def process_historical_data(historical_data: List[Dict]) -> Dict:
     for item in historical_data:
         close = item['history']['Close']
         dates = sorted(close.keys())
+
+        if len(dates) < 7:
+        # Handle case where there are less than 7 days of data
+            print(f"Not enough data for {item['metadata']['symbol']}. Skipping...")
+            continue
+
         latest = dates[-1]
         latest_price = close[latest]
         start = dates[-7]
