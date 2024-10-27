@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify
 import yfinance as yf
-import pandas as pd
 from src.utils.add_jk import addJK
 from src.utils.convertTimestamp import convert_timestamp
 import logging

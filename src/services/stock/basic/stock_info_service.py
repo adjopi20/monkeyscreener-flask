@@ -6,7 +6,6 @@ from pydantic import BaseModel, ValidationError
 from src.configs.cache_config import cache_ttl, client
 import json
 import pydantic.parse
-import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -15,16 +14,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
-from datetime import timedelta, datetime
 from typing import Optional
-import numpy as np
+import os
 
 class FetchedStock(BaseModel) :
     symbol: Optional[str] = 'Unknown'
     sector: Optional[str] = 'Unknown'
     industry: Optional[str] = 'Unknown'
-    bookValue: Optional[float] = 0.0
     companyOfficers: Optional[list] = []
+    beta: Optional[float] = 0.0
+    bookValue: Optional[float] = 0.0
+    fiftyTwoWeekChange: Optional[float] = 0.0
     currentPrice: Optional[int] = 0
     currentRatio: Optional[float]= 0.0
     debtToEquity: Optional[float]= 0.0
@@ -37,13 +37,15 @@ class FetchedStock(BaseModel) :
     enterpriseValue: Optional[int]= 0
     enterpriseToEbitda: Optional[float]= 0.0
     enterpriseToRevenue: Optional[float]= 0.0
-    # enterpriseToRevenue: Optional[float]= 0.0
+    fiftyTwoWeekChange: Optional[float] = 0.0
+    fiftyDayAverage: Optional[float]= 0.0
+    fiftyTwoWeekHigh: Optional[float]= 0.0
+    fiftyTwoWeekLow: Optional[float]= 0.0
     freeCashflow: Optional[int]= 0
     floatShares: Optional[int]= 0
     forwardEps: Optional[float]= 0.0
     forwardPE: Optional[float]= 0.0
     grossMargins: Optional[float]= 0.0
-    # grossProfits: Optional[float]= 0.0
     heldPercentInsiders: Optional[float]= 0.0
     heldPercentInstitutions: Optional[float]= 0.0
     longBusinessSummary: Optional[str]= 'None'
@@ -54,6 +56,7 @@ class FetchedStock(BaseModel) :
     operatingMargins: Optional[float]= 0.0
     payoutRatio: Optional[float]= 0.0
     pegRatio: Optional[float]= 0.0
+    previousClose: Optional[float]= 0.0
     priceToBook: Optional[float]= 0.0
     profitMargins: Optional[float]= 0.0
     quickRatio: Optional[float]= 0.0
@@ -82,36 +85,39 @@ combined = []
 
 def scrape_stock() :
     url = "https://www.idx.co.id/id/data-pasar/data-saham/daftar-saham"
+    current_file_dir = os.path.dirname(os.path.abspath(__file__))
+    relative_path_chrome = os.path.join(current_file_dir, '../../../../chrome-linux64/chrome-linux64/chrome')
+    relative_path_chromedriver = os.path.join(current_file_dir, '../../../../chromedriver-linux64/chromedriver-linux64/chromedriver')
+    path_chrome = os.path.abspath(relative_path_chrome)
+    path_chromedriver = os.path.abspath(relative_path_chromedriver)
 
     display = Display(
         visible=0, size=(800, 600)
         )
     display.start()
 
-    custom_chrome_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chrome-linux64/chrome-linux64/chrome"
-    chromedriver_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chromedriver-linux64/chromedriver-linux64/chromedriver"
+    # custom_chrome_path = r"/home/enigma/PROJECTS/stock-analysis-project-app/flask-yfinance/chrome-linux64/chrome-linux64/chrome"
+    # chromedriver_path = r"/home/enigma/FOLDER LOKAL/stock-analysis-project-app/flask-yfinance/chromedriver-linux64/chromedriver-linux64/chromedriver"
     
     # Initialize the WebDriver
     # service = Service(executable_path="/usr/local/bin/chromedriver")
-    service = Service(executable_path=chromedriver_path)
+    service = Service(executable_path=path_chromedriver, log_path="chromedriver.log")
+    service.command_line_args().append("--verbose")
+
     # options = webdriver.ChromeOptions()
     options = Options()
-    options.binary_location = custom_chrome_path  # Point to the custom Chrome binary
+    options.binary_location = path_chrome 
     # options.add_argument("--no-sandbox")
-    # options.add_argument("--headless=new")  # Run Chrome in headless mode
-    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--headless=new")
     # options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(service=service, options=options)
 
-    
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         driver.get(url)
 
         wait = WebDriverWait(driver, 1800)
 
-       
-        
         dropdown = wait.until(
             EC.presence_of_element_located((By.CLASS_NAME, "footer__row-count__select")))
         dropdown.click()
@@ -216,6 +222,7 @@ def fetch_stock():
                 symbol=stock_info.get('underlyingSymbol') or 'Unknown',
                 sector=stock_info.get('sector') or 'Unknown',
                 industry=stock_info.get('industry') or 'Unknown',
+                beta=stock_info.get('beta') or 0.0,
                 bookValue=stock_info.get('bookValue') or 0.0,
                 companyOfficers=stock_info.get('companyOfficers') or [],
                 currentPrice=stock_info.get('currentPrice') or 0,
@@ -230,13 +237,15 @@ def fetch_stock():
                 enterpriseValue=stock_info.get('enterpriseValue') or 0,
                 enterpriseToEbitda=stock_info.get('enterpriseToEbitda') or 0.0,
                 enterpriseToRevenue=stock_info.get('enterpriseToRevenue') or 0.0,
-                # enterpriseValueToRevenue=stock_info.get('enterpriseValueToRevenue'),
+                fiftyTwoWeekChange=stock_info.get('52WeekChange') or 0.0,
+                fiftyDayAverage=stock_info.get('fiftyDayAverage') or 0.0,
+                fiftyTwoWeekHigh=stock_info.get('fiftyTwoWeekHigh') or 0.0,
+                fiftyTwoWeekLow=stock_info.get('fiftyTwoWeekLow') or 0.0,
                 freeCashflow=stock_info.get('freeCashflow') or 0,
                 floatShares=stock_info.get('floatShares') or 0,
                 forwardEps=stock_info.get('forwardEps') or 0.0,
                 forwardPE=stock_info.get('forwardPE') or 0.0,
                 grossMargins=stock_info.get('grossMargins') or 0.0,
-                # grossProfits=stock_info.get('grossProfits'),
                 heldPercentInsiders=stock_info.get('heldPercentInsiders') or 0.0,
                 heldPercentInstitutions=stock_info.get('heldPercentInstitutions') or 0.0,
                 longBusinessSummary=stock_info.get('longBusinessSummary') or 'None',
@@ -247,6 +256,7 @@ def fetch_stock():
                 operatingMargins=stock_info.get('operatingMargins') or 0.0,
                 payoutRatio=stock_info.get('payoutRatio') or 0.0,
                 pegRatio=stock_info.get('pegRatio') or 0.0,
+                previousClose=stock_info.get('previousClose') or 0.0,
                 priceToBook=stock_info.get('priceToBook') or 0.0,
                 profitMargins=stock_info.get('profitMargins') or 0.0,
                 quickRatio=stock_info.get('quickRatio') or 0.0,
@@ -265,12 +275,6 @@ def fetch_stock():
                 volume=stock_info.get('volume') or 0
             )
             fetched_stocks.append(fetched_stock.model_dump(mode='json'))
-        
-        # for item in fetched_stocks:
-        #     for key in item:
-        #         fetched_stocks = map(lambda x : x == item[key] if item[key] == float('inf') else item[key], np.nan )
-                
-       
             
         print(f"fetched stock without cache: {len(fetched_stocks)}")    
         return fetched_stocks
@@ -327,8 +331,6 @@ def combine_fetched_scraped_info():
 
             # Apply the function to each item in the list
             all_stocks = list(map(replace_inf_with_nan, all_stocks))
-
-             
 
             # print(f"p {len(stocks_info)}")
             return all_stocks

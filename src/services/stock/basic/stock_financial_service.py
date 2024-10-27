@@ -1,11 +1,10 @@
 import logging
 from src.utils.convertTimestamp import convert_timestamp
 import yfinance as yf
-from src.services.stock_info_service import scrape_stock, scrape_stock_with_cache
+from src.services.stock.basic.stock_info_service import  scrape_stock_with_cache
 from src.configs.cache_config import cache_ttl, client
 import pydantic
 import json
-import redis
 import numpy as np
 
 

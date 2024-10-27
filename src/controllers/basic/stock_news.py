@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
 import yfinance as yf
-import pandas as pd
 from src.utils.add_jk import addJK
 import logging
-from src.services.stock_info_service import scrape_stock_with_cache
 from src.configs.cache_config import client, cache_ttl
 import json
 

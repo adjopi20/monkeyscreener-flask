@@ -1,8 +1,5 @@
 # from utils.bell_curve import create_bell_curve
-from src.services.stock_info_service import combine_fetched_scraped_info, stocklist
-from src.models.sector_enum import Sector
-import pandas as pd
-import numpy as np
+from src.services.stock.basic.stock_info_service import stocklist
 
 
 def get_stock_info_for_histogram(sector, category, listBoard=None, industry=None, marketCap=None, recKey=None):
@@ -26,6 +23,7 @@ def get_stock_info_for_histogram(sector, category, listBoard=None, industry=None
                     "listingBoard": stock.get("listing_board"),
                     "industry" :  stock.get("industry"),    
                     "sector" : stock.get("sector"),
+                    "beta": stock.get("beta"),
                     "bookValue": stock.get("bookValue"),
                     "currentPrice": stock.get("currentPrice"),
                     "currentRatio": stock.get("currentRatio"),
@@ -39,6 +37,10 @@ def get_stock_info_for_histogram(sector, category, listBoard=None, industry=None
                     "enterpriseToEbitda": stock.get("enterpriseToEbitda"),
                     "enterpriseToRevenue": stock.get("enterpriseToRevenue"),
                     "enterpriseValue": stock.get("enterpriseValue"),
+                    "fiftyDayAverage": stock.get("fiftyDayAverage"),
+                    "fiftyTwoWeekChange": stock.get("fiftyTwoWeekChange"),
+                    "fiftyTwoWeekHigh": stock.get("fiftyTwoWeekHigh"),
+                    "fiftyTwoWeekLow": stock.get("fiftyTwoWeekLow"),
                     "floatShares": stock.get("floatShares"),
                     "forwardEps" : stock.get("forwardEps"),
                     "forwardPE" : stock.get("forwardPE"),
@@ -52,6 +54,7 @@ def get_stock_info_for_histogram(sector, category, listBoard=None, industry=None
                     "operatingMargins": stock.get("operatingMargins"),
                     "payoutRatio": stock.get("payoutRatio"),
                     "pegRatio": stock.get("pegRatio"),
+                    "previousClose": stock.get("previousClose"),
                     "priceToBook": stock.get("priceToBook"),
                     "profitMargins": stock.get("profitMargins"),
                     "quickRatio": stock.get("quickRatio"),                    
